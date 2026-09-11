@@ -112,9 +112,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  </noscript>
   <link rel="stylesheet" href="./style.css">
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 <body>
   <div class="background-glow top-left"></div>
@@ -278,20 +281,20 @@
     </section>
 
     <!-- Consumer Feature Cards -->
-    <section class="features-grid">
+    <section class="features-grid" aria-label="Key Features">
       <div class="feature-card">
-        <div class="feature-icon">⚡</div>
-        <h3>Instant Extraction</h3>
+        <div class="feature-icon" aria-hidden="true">⚡</div>
+        <h2 class="feature-title">Instant Extraction</h2>
         <p>Subtitles processed in milliseconds without browser lag or queues directly on Cloudflare edge network.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">📝</div>
-        <h3>Multi-Format Export</h3>
+        <div class="feature-icon" aria-hidden="true">📝</div>
+        <h2 class="feature-title">Multi-Format Export</h2>
         <p>Formatted .srt and .vtt for video editing (CapCut, Premiere) plus clean raw .txt for reading and AI notes.</p>
       </div>
       <div class="feature-card">
-        <div class="feature-icon">🌍</div>
-        <h3>All Formats & Devices</h3>
+        <div class="feature-icon" aria-hidden="true">🌍</div>
+        <h2 class="feature-title">All Formats & Devices</h2>
         <p>Works seamlessly in Safari, Chrome, and Edge on iPhone, Android, Mac, and Windows with zero software install.</p>
       </div>
     </section>
@@ -582,6 +585,6 @@ console.log(transcript);</code></pre>
     </div>
   </div>
 
-  <script src="./app.js"></script>
+  <script src="./app.js" defer></script>
 </body>
 </html>

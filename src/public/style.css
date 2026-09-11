@@ -6,9 +6,9 @@
   --accent-cyan: #00f2ea;
   --accent-pink: #ff0050;
   --accent-purple: #7928ca;
-  --text-main: #f3f4f6;
-  --text-muted: #9ca3af;
-  --text-dim: #6b7280;
+  --text-main: #ffffff;
+  --text-muted: #e2e8f0;
+  --text-dim: #cbd5e1;
   --success: #10b981;
   --warning: #f59e0b;
   --error: #ef4444;
@@ -26,7 +26,7 @@
 body {
   background-color: var(--bg-dark);
   color: var(--text-main);
-  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   min-height: 100vh;
   display: flex;
   justify-content: center;
@@ -703,8 +703,8 @@ body {
 }
 
 .http-method {
-  background: #059669;
-  color: #fff;
+  background: #047857;
+  color: #ffffff;
   font-weight: 800;
   font-size: 0.75rem;
   padding: 3px 8px;
@@ -736,7 +736,7 @@ body {
   background: rgba(18, 22, 34, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-bottom: none;
-  color: var(--text-dim);
+  color: #d1d5db;
   padding: 8px 16px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
@@ -747,7 +747,7 @@ body {
 }
 
 .tab-btn:hover {
-  color: var(--text-main);
+  color: #ffffff;
 }
 
 .tab-btn.active {
@@ -777,7 +777,7 @@ body {
 .code-lang {
   font-size: 0.78rem;
   font-weight: 600;
-  color: var(--text-dim);
+  color: #d1d5db;
   text-transform: uppercase;
 }
 
@@ -857,6 +857,7 @@ body {
   margin-bottom: 4px;
 }
 
+.feature-card h2,
 .feature-card h3 {
   font-size: 1.05rem;
   font-weight: 700;
@@ -865,14 +866,14 @@ body {
 
 .feature-card p {
   font-size: 0.88rem;
-  color: var(--text-dim);
+  color: var(--text-muted);
   line-height: 1.5;
 }
 
 .app-footer {
   text-align: center;
   font-size: 0.82rem;
-  color: var(--text-dim);
+  color: var(--text-muted);
   padding-top: 1rem;
   display: flex;
   flex-direction: column;

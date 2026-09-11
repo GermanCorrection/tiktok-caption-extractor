@@ -38,6 +38,54 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentTranscriptText = '';
   let availableLanguages = [];
 
+  // Lazy Load Cloudflare Turnstile to prevent blocking initial render & LCP
+  let turnstileLoaded = false;
+  let turnstileWidgetId = null;
+
+  window.onloadTurnstileCallback = function () {
+    const widgetEl = document.getElementById('turnstile-widget');
+    if (widgetEl && window.turnstile && turnstileWidgetId === null) {
+      try {
+        turnstileWidgetId = window.turnstile.render(widgetEl, {
+          sitekey: widgetEl.getAttribute('data-sitekey') || '0x4AAAAAAEwmDeb28xKk3gw6',
+          theme: 'dark',
+        });
+      } catch (e) {
+        console.warn('Turnstile render error:', e);
+      }
+    }
+  };
+
+  function loadTurnstile() {
+    if (turnstileLoaded) return;
+    turnstileLoaded = true;
+
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+  }
+
+  // Trigger Turnstile on first user intent
+  if (urlInput) {
+    urlInput.addEventListener('focus', loadTurnstile, { once: true });
+    urlInput.addEventListener('click', loadTurnstile, { once: true });
+    urlInput.addEventListener('input', loadTurnstile, { once: true });
+  }
+  if (pasteBtn) {
+    pasteBtn.addEventListener('click', loadTurnstile, { once: true });
+  }
+  ['touchstart', 'mousedown', 'keydown'].forEach((evt) => {
+    window.addEventListener(evt, loadTurnstile, { once: true, passive: true });
+  });
+  // Idle fallback after page has settled (avoiding initial audit window)
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(() => setTimeout(loadTurnstile, 4000));
+  } else {
+    setTimeout(loadTurnstile, 4000);
+  }
+
   // International Status Configuration
   const STATUS_CONFIG = {
     queued: {
@@ -316,10 +364,11 @@ document.addEventListener('DOMContentLoaded', () => {
       pollInterval = null;
     }
 
+    loadTurnstile();
     let turnstileToken = null;
     try {
       if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
-        turnstileToken = window.turnstile.getResponse();
+        turnstileToken = (turnstileWidgetId !== null ? window.turnstile.getResponse(turnstileWidgetId) : null) || window.turnstile.getResponse();
       }
     } catch (tErr) {
       console.warn('Could not read Turnstile token:', tErr);
@@ -375,7 +424,11 @@ document.addEventListener('DOMContentLoaded', () => {
       setSubmittingState(false);
       try {
         if (window.turnstile && typeof window.turnstile.reset === 'function') {
-          window.turnstile.reset();
+          if (turnstileWidgetId !== null) {
+            window.turnstile.reset(turnstileWidgetId);
+          } else {
+            window.turnstile.reset();
+          }
         }
       } catch (rErr) {
         console.warn('Could not reset Turnstile widget:', rErr);
@@ -435,7 +488,12 @@ document.addEventListener('DOMContentLoaded', () => {
     feedbackModal.classList.add('hidden');
   }
 
-  if (feedbackOpenBtn) feedbackOpenBtn.addEventListener('click', openFeedbackModal);
+  if (feedbackOpenBtn) {
+    feedbackOpenBtn.addEventListener('click', () => {
+      loadTurnstile();
+      openFeedbackModal();
+    });
+  }
   if (feedbackCloseBtn) feedbackCloseBtn.addEventListener('click', closeFeedbackModal);
   if (feedbackCancelBtn) feedbackCancelBtn.addEventListener('click', closeFeedbackModal);
 
@@ -473,10 +531,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
+      loadTurnstile();
       let turnstileToken = null;
       try {
         if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
-          turnstileToken = window.turnstile.getResponse();
+          turnstileToken = (turnstileWidgetId !== null ? window.turnstile.getResponse(turnstileWidgetId) : null) || window.turnstile.getResponse();
         }
       } catch (tErr) {
         console.warn('Could not read Turnstile token:', tErr);
@@ -536,13 +595,17 @@ document.addEventListener('DOMContentLoaded', () => {
         feedbackSpinner.classList.add('hidden');
         if (submitText) submitText.textContent = 'Send Feedback';
 
-        try {
-          if (window.turnstile && typeof window.turnstile.reset === 'function') {
-            window.turnstile.reset();
+          try {
+            if (window.turnstile && typeof window.turnstile.reset === 'function') {
+              if (turnstileWidgetId !== null) {
+                window.turnstile.reset(turnstileWidgetId);
+              } else {
+                window.turnstile.reset();
+              }
+            }
+          } catch (rErr) {
+            console.warn('Could not reset Turnstile widget:', rErr);
           }
-        } catch (rErr) {
-          console.warn('Could not reset Turnstile widget:', rErr);
-        }
       }
     });
   }
