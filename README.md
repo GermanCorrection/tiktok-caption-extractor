@@ -1,6 +1,14 @@
-# TikTok Caption Extractor (Cloudflare Serverless)
+# CaptionFast ⚡ – Instant TikTok Subtitle & Transcript Extractor
 
-Eine vollständige, serverlose Webanwendung und API, die auf der Cloudflare-Plattform läuft (keine externen Server) und aus beliebigen TikTok-Links (inklusive Kurzlinks wie `vm.tiktok.com` oder `vt.tiktok.com`) automatisch gesprochene Untertitel und Transkripte extrahiert und als `.srt`- und `.vtt`-Dateien speichert.
+[![Live Web App](https://img.shields.io/badge/Live_Web_App-captionfast.is--a.dev-00f2ea?style=for-the-badge&logo=cloudflare&logoColor=white)](https://captionfast.is-a.dev/)
+[![REST API](https://img.shields.io/badge/REST_API-Edge_Native-7928ca?style=for-the-badge)](https://captionfast.is-a.dev/api/v1/subtitles)
+[![GitHub License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
+[![Tests](https://img.shields.io/badge/Tests-39_Passed-10b981?style=for-the-badge)](./tests)
+
+> **🚀 Live Web App:** [https://captionfast.is-a.dev](https://captionfast.is-a.dev) *(Backup Worker: [https://captionfast.vitobuchholzx.workers.dev](https://captionfast.vitobuchholzx.workers.dev))*  
+> **⚡ Public REST API:** [https://captionfast.is-a.dev/api/v1/subtitles?url={TIKTOK_URL}&format=json](https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json)
+
+A blazing-fast, 100% serverless web application, edge REST API, and Python CLI running on the Cloudflare global network. Automatically extracts closed captions, spoken transcripts, and subtitles from any TikTok link (including shortlinks like `vm.tiktok.com` or `vt.tiktok.com`) and exports them into `.srt`, `.vtt`, and clean `.txt` files in milliseconds without requiring sign-up or software installation.
 
 ---
 
