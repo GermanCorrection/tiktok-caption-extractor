@@ -1,12 +1,12 @@
 # CaptionFast ⚡ – Instant TikTok Subtitle & Transcript Extractor
 
-[![Live Web App](https://img.shields.io/badge/Live_Web_App-captionfast.is--a.dev-00f2ea?style=for-the-badge&logo=cloudflare&logoColor=white)](https://captionfast.is-a.dev/)
-[![REST API](https://img.shields.io/badge/REST_API-Edge_Native-7928ca?style=for-the-badge)](https://captionfast.is-a.dev/api/v1/subtitles)
+[![Live Web App](https://img.shields.io/badge/Live_Web_App-captionfast.github.io-00f2ea?style=for-the-badge&logo=github&logoColor=white)](https://captionfast.github.io/)
+[![REST API](https://img.shields.io/badge/REST_API-Edge_Native-7928ca?style=for-the-badge)](https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles)
 [![GitHub License](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](./LICENSE)
 [![Tests](https://img.shields.io/badge/Tests-39_Passed-10b981?style=for-the-badge)](./tests)
 
-> **🚀 Live Web App:** [https://captionfast.is-a.dev](https://captionfast.is-a.dev) *(Backup Worker: [https://captionfast.vitobuchholzx.workers.dev](https://captionfast.vitobuchholzx.workers.dev))*  
-> **⚡ Public REST API:** [https://captionfast.is-a.dev/api/v1/subtitles?url={TIKTOK_URL}&format=json](https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json)
+> **🚀 Live Web App:** [https://captionfast.github.io](https://captionfast.github.io) *(Edge Worker: [https://captionfast.vitobuchholzx.workers.dev](https://captionfast.vitobuchholzx.workers.dev))*  
+> **⚡ Public REST API:** [https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url={TIKTOK_URL}&format=json](https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json)
 
 A blazing-fast, 100% serverless web application, edge REST API, and Python CLI running on the Cloudflare global network. Automatically extracts closed captions, spoken transcripts, and subtitles from any TikTok link (including shortlinks like `vm.tiktok.com` or `vt.tiktok.com`) and exports them into `.srt`, `.vtt`, and clean `.txt` files in milliseconds without requiring sign-up or software installation.
 
@@ -227,10 +227,10 @@ Nutzt ausschließlich Tier 1 (Universal Data Rehydration) und Tier 2 (Alternativ
 ### Beispiel cURL
 ```bash
 # 1. JSON mit Transkript & Metadaten abrufen
-curl "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
+curl "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
 
 # 2. Direkt als .SRT Datei herunterladen
-curl -o video.srt "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
+curl -o video.srt "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
 ```
 
 ### JSON-Antwort (`format=json`):
@@ -245,8 +245,8 @@ curl -o video.srt "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.
     { "text": "Transkript des Videos...", "start": 1500, "end": 3200 }
   ],
   "downloads": {
-    "srt": "https://captionfast.is-a.dev/api/download/xxx/srt",
-    "vtt": "https://captionfast.is-a.dev/api/download/xxx/vtt"
+    "srt": "https://captionfast.vitobuchholzx.workers.dev/api/download/xxx/srt",
+    "vtt": "https://captionfast.vitobuchholzx.workers.dev/api/download/xxx/vtt"
   }
 }
 ```

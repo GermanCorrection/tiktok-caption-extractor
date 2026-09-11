@@ -3,7 +3,7 @@ title: Why I Built an Instant TikTok Transcript Extractor with Cloudflare Worker
 published: true
 description: How to extract TikTok subtitles and transcripts without heavy headless browser clusters using Cloudflare edge workers and HTML rehydration.
 tags: webdev, cloudflare, serverless, python
-canonical_url: https://captionfast.is-a.dev
+canonical_url: https://captionfast.github.io
 ---
 
 # Why I Built an Instant TikTok Transcript Extractor with Cloudflare Workers
@@ -14,7 +14,7 @@ Running full Chromium instances with Playwright or Puppeteer to solve TikTok's J
 
 I wanted something different: **instant subtitle extraction in under 500ms with zero heavy infrastructure.**
 
-Here is how I built [CaptionFast](https://captionfast.is-a.dev) — a 100% serverless edge app and public developer API deployed entirely on Cloudflare Workers.
+Here is how I built [CaptionFast](https://captionfast.github.io) — a 100% serverless edge app and public developer API deployed entirely on Cloudflare Workers.
 
 ---
 
@@ -47,16 +47,16 @@ Extracted subtitles are converted into standard `.SRT` (for CapCut / Premiere), 
 ## Free Web Tool & Public Developer API
 
 You can test the tool live in your browser:
-👉 **[https://captionfast.is-a.dev](https://captionfast.is-a.dev)**
+👉 **[https://captionfast.github.io](https://captionfast.github.io)**
 
 Or query the free, keyless REST API directly:
 
 ```bash
 # Fetch transcripts & metadata as JSON:
-curl "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
+curl "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
 
 # Download direct .SRT subtitle file:
-curl -o captions.srt "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
+curl -o captions.srt "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
 ```
 
 Python developers can install the zero-dependency client:

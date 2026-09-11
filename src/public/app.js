@@ -1,6 +1,10 @@
 // Client-side Controller for TikTok Caption & Subtitle Downloader
 
 document.addEventListener('DOMContentLoaded', () => {
+  const API_BASE = window.location.hostname.includes('workers.dev') || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+    ? ''
+    : 'https://captionfast.vitobuchholzx.workers.dev';
+
   const form = document.getElementById('submit-form');
   const urlInput = document.getElementById('tiktok-url-input');
   const pasteBtn = document.getElementById('paste-btn');
@@ -285,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!selectedObj || !selectedObj.url) return;
 
       try {
-        const res = await fetch('/api/convert-subtitle', {
+        const res = await fetch(`${API_BASE}/api/convert-subtitle`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url: selectedObj.url }),
@@ -327,7 +331,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     pollInterval = setInterval(async () => {
       try {
-        const response = await fetch(`/api/status/${jobId}`);
+        const response = await fetch(`${API_BASE}/api/status/${jobId}`);
         if (!response.ok) return;
 
         const data = await response.json();
@@ -379,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateStatusUI('processing', { message: 'Analyzing TikTok video link (Instant Engine)...' });
 
     try {
-      const res = await fetch('/api/submit', {
+      const res = await fetch(`${API_BASE}/api/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -551,7 +555,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       try {
-        const res = await fetch('/api/feedback', {
+        const res = await fetch(`${API_BASE}/api/feedback`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
