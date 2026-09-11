@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TikTok Subtitle Downloader – Free Captions & Transcripts (SRT, VTT, TXT)</title>
+  <meta name="description" content="Download TikTok subtitles and full transcripts online for free. Export accurate .srt, .vtt and .txt files from any TikTok video instantly without registration.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+</head>
+<body>
+  <div class="background-glow top-left"></div>
+  <div class="background-glow bottom-right"></div>
+
+  <main class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="badge-tag">
+        <span class="pulse-dot"></span>
+        <span>⚡ 100% FREE & NO SIGN-UP REQUIRED</span>
+      </div>
+      <h1 class="main-title">TikTok Caption & Subtitle Downloader</h1>
+      <p class="subtitle">Extract spoken transcripts and captions from any TikTok video in seconds. Download as clean <code>.srt</code>, <code>.vtt</code>, or plain text.</p>
+    </header>
+
+    <!-- Main Card -->
+    <section class="card glass-card">
+      <form id="submit-form" class="url-form">
+        <div class="input-group">
+          <div class="input-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+              <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+            </svg>
+          </div>
+          <input
+            type="url"
+            id="tiktok-url-input"
+            class="styled-input"
+            placeholder="Paste TikTok link here (e.g., https://vm.tiktok.com/... or tiktok.com/@user/video/...)"
+            required
+            autocomplete="off"
+            spellcheck="false"
+          />
+          <button type="button" id="paste-btn" class="paste-btn" title="Paste link from clipboard">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+            <span>Paste</span>
+          </button>
+          <button type="submit" id="submit-btn" class="primary-btn">
+            <span class="btn-text">Get Subtitles →</span>
+            <div class="spinner hidden" id="submit-spinner"></div>
+          </button>
+        </div>
+
+        <!-- Cloudflare Turnstile Widget -->
+        <div class="turnstile-container">
+          <div
+            id="turnstile-widget"
+            class="cf-turnstile"
+            data-sitekey="0x4AAAAAAEwmDeb28xKk3gw6"
+            data-theme="dark"
+          ></div>
+        </div>
+
+        <!-- Discreet Consumer Terms Disclaimer (No checkbox required) -->
+        <p class="terms-disclaimer">By using this service, you agree to our Terms. For authorized content only.</p>
+      </form>
+
+      <!-- Dynamic Status & Result Box -->
+      <div id="status-card" class="status-card hidden">
+        <div class="status-header">
+          <div class="status-indicator-wrapper">
+            <div id="status-badge" class="status-badge queued">
+              <span id="status-icon" class="status-icon">⏳</span>
+              <span id="status-text">Processing...</span>
+            </div>
+          </div>
+          <span id="job-id-display" class="job-id-display">Job: -</span>
+        </div>
+
+        <div class="progress-bar-container">
+          <div id="progress-bar" class="progress-bar queued"></div>
+        </div>
+
+        <div id="status-message" class="status-message">
+          Resolving TikTok link and extracting subtitles...
+        </div>
+
+        <!-- Result Section (Downloads, Language Selector, Transcript) -->
+        <div id="result-section" class="result-section hidden">
+          <div class="result-details">
+            <div class="meta-pill">
+              <span class="meta-label">Language:</span>
+              <span id="result-lang" class="meta-value">EN</span>
+            </div>
+            <div class="meta-pill">
+              <span class="meta-label">Segments:</span>
+              <span id="result-count" class="meta-value">0</span>
+            </div>
+            <div class="meta-pill">
+              <span class="meta-label">Speed:</span>
+              <span id="result-cached" class="meta-value">⚡ Fast Extract</span>
+            </div>
+          </div>
+
+          <!-- Multi-Language Selector Dropdown (if multiple languages available) -->
+          <div id="language-selector-container" class="language-selector-container hidden">
+            <label for="language-select" class="selector-label">Available Languages:</label>
+            <select id="language-select" class="styled-select"></select>
+          </div>
+
+          <!-- 3-Button Download Grid (.SRT, .VTT, .TXT) -->
+          <div class="download-actions">
+            <a id="download-srt-btn" class="download-btn srt" href="#" download>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download .SRT</span>
+            </a>
+            <a id="download-vtt-btn" class="download-btn vtt" href="#" download>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <span>Download .VTT</span>
+            </a>
+            <a id="download-txt-btn" class="download-btn txt" href="#" download>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+              <span>Download .TXT</span>
+            </a>
+          </div>
+
+          <!-- Live Transcript Preview with 1-Click Copy -->
+          <div class="transcript-box">
+            <div class="transcript-header">
+              <span class="transcript-title">📝 Live Transcript Preview</span>
+              <button type="button" id="copy-transcript-btn" class="copy-transcript-btn" title="Copy full text without timestamps">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span id="copy-btn-text">Copy Transcript</span>
+              </button>
+            </div>
+            <div id="transcript-body" class="transcript-body">
+              <p class="transcript-placeholder">Transcript will appear here once ready...</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Error Detail Box -->
+        <div id="error-section" class="error-section hidden">
+          <div class="error-box">
+            <span class="error-title">Extraction Notice</span>
+            <p id="error-text">Subtitles could not be extracted from this video.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Consumer Feature Cards -->
+    <section class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Instant Extraction</h3>
+        <p>Subtitles processed in milliseconds without browser lag or queues directly on Cloudflare edge network.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📝</div>
+        <h3>Multi-Format Export</h3>
+        <p>Formatted .srt and .vtt for video editing (CapCut, Premiere) plus clean raw .txt for reading and AI notes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌍</div>
+        <h3>All Formats & Devices</h3>
+        <p>Works seamlessly in Safari, Chrome, and Edge on iPhone, Android, Mac, and Windows with zero software install.</p>
+      </div>
+    </section>
+
+    <!-- Interactive FAQ Accordion -->
+    <section class="faq-section">
+      <h2 class="faq-heading">Frequently Asked Questions</h2>
+      <div class="faq-accordion">
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>How do I download captions from a TikTok video?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Simply copy any TikTok video link (including vm.tiktok.com or vt.tiktok.com shortlinks), click "Paste" in the box above, and press "Get Subtitles". Our system instantly analyzes the video and prepares your .SRT, .VTT, and .TXT downloads.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>What is the difference between SRT, VTT, and TXT?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p><strong>.SRT (SubRip)</strong> is the industry-standard timed subtitle format supported by CapCut, Adobe Premiere, and Final Cut Pro.<br><strong>.VTT (WebVTT)</strong> is optimized for HTML5 web players.<br><strong>.TXT</strong> is plain text containing only the spoken words without timestamps—ideal for notes, blog posts, or feeding into ChatGPT.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>Does this tool work on mobile devices?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes! The tool is fully responsive and runs in mobile browsers on iOS (iPhone, iPad) and Android without downloading any third-party app or extension.</p>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button type="button" class="faq-question">
+            <span>Is it completely free?</span>
+            <span class="faq-chevron">+</span>
+          </button>
+          <div class="faq-answer">
+            <p>Yes, 100% free with unlimited extractions, zero advertising popups, no subscriptions, and no registration required.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Developer API Section -->
+    <section class="dev-api-section card glass-card">
+      <div class="dev-api-header">
+        <div class="dev-badge-tag">
+          <span class="pulse-dot"></span>
+          <span>Free REST API • No API Key Required</span>
+        </div>
+        <h2 class="dev-api-title">Integrate TikTok Subtitles Into Your Apps</h2>
+        <p class="dev-api-subtitle">
+          Query transcripts and subtitle files in <code>JSON</code>, <code>SRT</code>, <code>VTT</code>, or <code>TXT</code> directly via our edge API (up to 30 req/min/IP).
+        </p>
+      </div>
+
+      <div class="api-endpoint-badge">
+        <span class="http-method">GET</span>
+        <code class="endpoint-url">https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles?url={TIKTOK_URL}&format=json</code>
+      </div>
+
+      <!-- Code Snippet Tabs -->
+      <div class="code-tabs-container">
+        <div class="tab-buttons">
+          <button type="button" class="tab-btn active" data-tab="tab-curl">cURL</button>
+          <button type="button" class="tab-btn" data-tab="tab-python">Python</button>
+          <button type="button" class="tab-btn" data-tab="tab-js">JavaScript</button>
+        </div>
+
+        <div class="code-window">
+          <div class="code-header">
+            <span class="code-lang" id="code-lang-label">cURL</span>
+            <button type="button" id="copy-code-btn" class="copy-code-btn" title="Copy code snippet">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span id="copy-code-text">Copy</span>
+            </button>
+          </div>
+
+          <div class="tab-pane" id="tab-curl">
+            <pre><code class="code-content"># 1. Fetch transcript & metadata as JSON:
+curl "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/"
+
+# 2. Download direct .SRT subtitle file:
+curl -o video.srt "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"</code></pre>
+          </div>
+
+          <div class="tab-pane hidden" id="tab-python">
+            <pre><code class="code-content">import requests
+
+url = "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles"
+params = {
+    "url": "https://vm.tiktok.com/ZGeXXXXX/",
+    "format": "json"  # or 'srt', 'vtt', 'txt'
+}
+
+response = requests.get(url, params=params)
+data = response.json()
+
+print(f"Language: {data['language']}")
+print(f"Transcript:\n{data['transcript']}")</code></pre>
+          </div>
+
+          <div class="tab-pane hidden" id="tab-js">
+            <pre><code class="code-content">const tiktokUrl = "https://vm.tiktok.com/ZGeXXXXX/";
+const apiUrl = `https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles?url=${encodeURIComponent(tiktokUrl)}&format=json`;
+
+const res = await fetch(apiUrl);
+const { language, transcript, subtitles } = await res.json();
+
+console.log(`Language: ${language}`);
+console.log(transcript);</code></pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>100% Serverless Edge Infrastructure • Ultra-Fast • Private & Secure</p>
+      <div class="footer-links">
+        <button type="button" id="feedback-open-btn" class="feedback-link-btn">
+          💬 Feedback & Report Issue
+        </button>
+      </div>
+    </footer>
+  </main>
+
+  <!-- Feedback Modal -->
+  <div id="feedback-modal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title">
+    <div class="modal-card glass-card">
+      <div class="modal-header">
+        <h3 id="feedback-modal-title" class="modal-title">💬 Feedback & Report an Issue</h3>
+        <button type="button" id="feedback-close-btn" class="modal-close-btn" aria-label="Close">&times;</button>
+      </div>
+
+      <form id="feedback-form" class="feedback-form">
+        <p class="modal-desc">Tell us about any TikTok link that didn't work or suggestions you have. Your message is sent directly to the development team.</p>
+
+        <div class="form-field">
+          <label for="feedback-message" class="form-label">
+            Your Message <span class="required">*</span>
+          </label>
+          <textarea
+            id="feedback-message"
+            class="styled-textarea"
+            rows="4"
+            minlength="5"
+            maxlength="1500"
+            placeholder="Your feedback, bug report, or TikTok video link that didn't work..."
+            required
+          ></textarea>
+          <div class="char-counter">
+            <span id="char-count">0</span> / 1500 characters
+          </div>
+        </div>
+
+        <div class="form-field">
+          <label for="feedback-contact" class="form-label">
+            Contact (optional)
+          </label>
+          <input
+            type="text"
+            id="feedback-contact"
+            class="styled-input"
+            maxlength="120"
+            placeholder="Contact (optional, e.g. Discord handle or email if you'd like a response)"
+          />
+        </div>
+
+        <div id="feedback-status-msg" class="feedback-status-msg hidden"></div>
+
+        <div class="modal-actions">
+          <button type="button" id="feedback-cancel-btn" class="secondary-btn">Cancel</button>
+          <button type="submit" id="feedback-submit-btn" class="primary-btn">
+            <span class="btn-text">Send Feedback</span>
+            <div class="spinner hidden" id="feedback-spinner"></div>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>

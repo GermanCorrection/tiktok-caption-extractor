@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tiktok-subtitles-client"
+version = "1.0.0"
+description = "Fast, lightweight unofficial Python client & CLI for extracting TikTok captions and subtitles"
+readme = "README.md"
+requires-python = ">=3.8"
+keywords = ["tiktok", "captions", "subtitles", "srt", "vtt", "transcript", "scraper"]
+authors = [
+    { name = "TikTok Subtitles Contributors" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Multimedia :: Video",
+]
+
+[project.scripts]
+tiktok-subtitles = "tiktok_subtitles:main"
+
+[tool.setuptools]
+py-modules = ["tiktok_subtitles"]

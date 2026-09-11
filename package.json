@@ -1,0 +1,24 @@
+{
+  "name": "tiktok-caption-extractor",
+  "version": "1.0.0",
+  "description": "Serverless TikTok caption extractor using Cloudflare Workers, Hono, Browser Rendering, D1, R2, Queues, and KV",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "d1:init": "wrangler d1 execute tiktok-db --file=./src/db/schema.sql --local",
+    "d1:init:remote": "wrangler d1 execute tiktok-db --file=./src/db/schema.sql --remote"
+  },
+  "dependencies": {
+    "@cloudflare/puppeteer": "^0.0.15",
+    "hono": "^4.7.2"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250224.0",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7",
+    "wrangler": "^3.111.0"
+  }
+}

@@ -1,0 +1,51 @@
+name = "tiktok-caption-extractor"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+# Static Assets for the Web Frontend
+[assets]
+directory = "./src/public"
+binding = "ASSETS"
+
+# Cloudflare Browser Rendering API
+[browser]
+binding = "MYBROWSER"
+
+# Cloudflare D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "tiktok-db"
+database_id = "a13d58b9-959c-4840-bd81-b1a6ba612a1a"
+preview_database_id = "dd79d76e-afb7-4ef7-a8e6-903012648009"
+
+# Cloudflare R2 Bucket for Subtitle Files
+[[r2_buckets]]
+binding = "BUCKET"
+bucket_name = "tiktok-subtitles"
+preview_bucket_name = "tiktok-subtitles-preview"
+
+# Cloudflare KV for Caching & Rate Limiting
+[[kv_namespaces]]
+binding = "KV_CACHE"
+id = "7cebd51d57ba4fc498a65757896d212e"
+preview_id = "e530d6de22b74c659e487a2e6461bd34"
+
+# Cloudflare Queues (Producer)
+[[queues.producers]]
+binding = "QUEUE"
+queue = "tiktok-caption-jobs"
+
+# Cloudflare Queues (Consumer)
+# Concurrency limit explicitly set to protect Cloudflare Browser Rendering session limits (max 2-3 sessions)
+[[queues.consumers]]
+queue = "tiktok-caption-jobs"
+max_batch_size = 1
+max_concurrency = 2
+max_retries = 3
+dead_letter_queue = "tiktok-caption-jobs-dlq"
+
+# Environment Variables & Secrets
+[vars]
+ENVIRONMENT = "production"
+MAX_REQUESTS_PER_MINUTE = "15"

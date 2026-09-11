@@ -1,0 +1,30 @@
+# Node / Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Cloudflare Wrangler & Environment
+.wrangler/
+.env
+.env.local
+.dev.vars
+
+# Build output
+dist/
+out/
+
+# Python artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+build/
+dist/
+.eggs/
+
+# IDE & OS
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
