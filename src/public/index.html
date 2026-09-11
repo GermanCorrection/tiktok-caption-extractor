@@ -252,7 +252,7 @@
 
       <div class="api-endpoint-badge">
         <span class="http-method">GET</span>
-        <code class="endpoint-url">https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url={TIKTOK_URL}&format=json</code>
+        <code class="endpoint-url">https://captionfast.is-a.dev/api/v1/subtitles?url={TIKTOK_URL}&format=json</code>
       </div>
 
       <!-- Code Snippet Tabs -->
@@ -277,16 +277,16 @@
 
           <div class="tab-pane" id="tab-curl">
             <pre><code class="code-content"># 1. Fetch transcript & metadata as JSON:
-curl "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/"
+curl "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/"
 
 # 2. Download direct .SRT subtitle file:
-curl -o video.srt "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"</code></pre>
+curl -o video.srt "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"</code></pre>
           </div>
 
           <div class="tab-pane hidden" id="tab-python">
             <pre><code class="code-content">import requests
 
-url = "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles"
+url = "https://captionfast.is-a.dev/api/v1/subtitles"
 params = {
     "url": "https://vm.tiktok.com/ZGeXXXXX/",
     "format": "json"  # or 'srt', 'vtt', 'txt'
@@ -301,7 +301,7 @@ print(f"Transcript:\n{data['transcript']}")</code></pre>
 
           <div class="tab-pane hidden" id="tab-js">
             <pre><code class="code-content">const tiktokUrl = "https://vm.tiktok.com/ZGeXXXXX/";
-const apiUrl = `https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=${encodeURIComponent(tiktokUrl)}&format=json`;
+const apiUrl = `https://captionfast.is-a.dev/api/v1/subtitles?url=${encodeURIComponent(tiktokUrl)}&format=json`;
 
 const res = await fetch(apiUrl);
 const { language, transcript, subtitles } = await res.json();

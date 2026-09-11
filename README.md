@@ -219,10 +219,10 @@ Nutzt ausschließlich Tier 1 (Universal Data Rehydration) und Tier 2 (Alternativ
 ### Beispiel cURL
 ```bash
 # 1. JSON mit Transkript & Metadaten abrufen
-curl "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
+curl "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
 
 # 2. Direkt als .SRT Datei herunterladen
-curl -o video.srt "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
+curl -o video.srt "https://captionfast.is-a.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
 ```
 
 ### JSON-Antwort (`format=json`):
@@ -237,8 +237,8 @@ curl -o video.srt "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitle
     { "text": "Transkript des Videos...", "start": 1500, "end": 3200 }
   ],
   "downloads": {
-    "srt": "https://captionfast.vitobuchholzx.workers.dev/api/download/xxx/srt",
-    "vtt": "https://captionfast.vitobuchholzx.workers.dev/api/download/xxx/vtt"
+    "srt": "https://captionfast.is-a.dev/api/download/xxx/srt",
+    "vtt": "https://captionfast.is-a.dev/api/download/xxx/vtt"
   }
 }
 ```
