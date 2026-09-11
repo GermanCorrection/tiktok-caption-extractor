@@ -7,7 +7,7 @@ compatibility_flags = ["nodejs_compat"]
 [assets]
 directory = "./src/public"
 binding = "ASSETS"
-html_handling = "none"
+html_handling = "auto-trailing-slash"
 
 # Cloudflare Browser Rendering API
 [browser]

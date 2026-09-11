@@ -844,6 +844,16 @@ app.get('/googlec2cc10a2757e015f', (c) => {
 });
 
 /**
+ * Root route: Serves index.html from static assets
+ */
+app.get('/', async (c) => {
+  if (c.env.ASSETS) {
+    return c.env.ASSETS.fetch(new Request(new URL('/index.html', c.req.url), c.req.raw));
+  }
+  return c.text('Not Found', 404);
+});
+
+/**
  * Cloudflare Worker Export:
  * Includes both Hono HTTP router (fetch) and Cloudflare Queue consumer (queue).
  */
