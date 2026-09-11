@@ -829,6 +829,21 @@ app.post('/api/feedback', async (c) => {
 });
 
 /**
+ * Google Search Console Site Verification Endpoints
+ */
+app.get('/googlec2cc10a2757e015f.html', (c) => {
+  return c.text('google-site-verification: googlec2cc10a2757e015f.html', 200, {
+    'Content-Type': 'text/html; charset=utf-8',
+  });
+});
+
+app.get('/googlec2cc10a2757e015f', (c) => {
+  return c.text('google-site-verification: googlec2cc10a2757e015f.html', 200, {
+    'Content-Type': 'text/html; charset=utf-8',
+  });
+});
+
+/**
  * Cloudflare Worker Export:
  * Includes both Hono HTTP router (fetch) and Cloudflare Queue consumer (queue).
  */
