@@ -63,7 +63,7 @@ tiktok-subtitles "https://vm.tiktok.com/ZGeXXXXX/" --format txt -o speech.txt
 
 ```bash
 # cURL
-curl "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
+curl "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
 ```
 
 Rate limit: 30 requests per minute per IP. No API key or registration required.

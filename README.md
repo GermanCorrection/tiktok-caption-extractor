@@ -219,10 +219,10 @@ Nutzt ausschließlich Tier 1 (Universal Data Rehydration) und Tier 2 (Alternativ
 ### Beispiel cURL
 ```bash
 # 1. JSON mit Transkript & Metadaten abrufen
-curl "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
+curl "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=json"
 
 # 2. Direkt als .SRT Datei herunterladen
-curl -o video.srt "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
+curl -o video.srt "https://captionfast.vitobuchholzx.workers.dev/api/v1/subtitles?url=https://vm.tiktok.com/ZGeXXXXX/&format=srt"
 ```
 
 ### JSON-Antwort (`format=json`):
@@ -237,8 +237,8 @@ curl -o video.srt "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/ap
     { "text": "Transkript des Videos...", "start": 1500, "end": 3200 }
   ],
   "downloads": {
-    "srt": "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/download/xxx/srt",
-    "vtt": "https://tiktok-caption-extractor.vitobuchholzx.workers.dev/api/download/xxx/vtt"
+    "srt": "https://captionfast.vitobuchholzx.workers.dev/api/download/xxx/srt",
+    "vtt": "https://captionfast.vitobuchholzx.workers.dev/api/download/xxx/vtt"
   }
 }
 ```

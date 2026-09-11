@@ -22,7 +22,7 @@ import urllib.request
 import urllib.error
 from typing import Optional, Dict, Any, Union
 
-DEFAULT_API_BASE = "https://tiktok-caption-extractor.vitobuchholzx.workers.dev"
+DEFAULT_API_BASE = "https://captionfast.vitobuchholzx.workers.dev"
 
 
 class TikTokSubtitlesError(Exception):

@@ -1,5 +1,5 @@
 {
-  "name": "tiktok-caption-extractor",
+  "name": "captionfast",
   "version": "1.0.0",
   "description": "Serverless TikTok caption extractor using Cloudflare Workers, Hono, Browser Rendering, D1, R2, Queues, and KV",
   "main": "src/index.ts",
