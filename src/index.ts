@@ -15,6 +15,19 @@ export const app = new Hono<{ Bindings: Env }>();
 // Enable CORS for API routes
 app.use('/api/*', cors());
 
+// Attach strict HTTP Security Headers to all responses
+app.use('*', async (c, next) => {
+  await next();
+  c.header('X-Content-Type-Options', 'nosniff');
+  c.header('X-Frame-Options', 'DENY');
+  c.header('Referrer-Policy', 'strict-origin-when-cross-origin');
+  c.header('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  c.header(
+    'Content-Security-Policy',
+    "default-src 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; connect-src 'self' https://captionfast.vitobuchholzx.workers.dev https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; img-src 'self' data: https:; object-src 'none'; base-uri 'self';"
+  );
+});
+
 /**
  * Health check endpoint
  */

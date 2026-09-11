@@ -195,16 +195,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (!transcriptBody) return;
+    transcriptBody.replaceChildren();
 
     if (Array.isArray(subtitles) && subtitles.length > 0) {
-      transcriptBody.innerHTML = subtitles
-        .filter((s) => s.text && s.text.trim())
-        .map((s) => `<p class="transcript-line"><span class="transcript-time">[${formatDisplayTime(s.start)}]</span> ${escapeHtml(s.text)}</p>`)
-        .join('');
+      const fragment = document.createDocumentFragment();
+      for (const s of subtitles) {
+        if (!s.text || !s.text.trim()) continue;
+
+        const p = document.createElement('p');
+        p.className = 'transcript-line';
+
+        const span = document.createElement('span');
+        span.className = 'transcript-time';
+        span.textContent = `[${formatDisplayTime(s.start)}] `;
+
+        p.appendChild(span);
+        p.appendChild(document.createTextNode(s.text));
+        fragment.appendChild(p);
+      }
+      transcriptBody.appendChild(fragment);
     } else if (currentTranscriptText) {
-      transcriptBody.innerHTML = `<p class="transcript-plain">${escapeHtml(currentTranscriptText)}</p>`;
+      const p = document.createElement('p');
+      p.className = 'transcript-plain';
+      p.textContent = currentTranscriptText;
+      transcriptBody.appendChild(p);
     } else {
-      transcriptBody.innerHTML = '<p class="transcript-placeholder">Transcript text preview not available.</p>';
+      const p = document.createElement('p');
+      p.className = 'transcript-placeholder';
+      p.textContent = 'Transcript text preview not available.';
+      transcriptBody.appendChild(p);
     }
   }
 
@@ -213,12 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const m = Math.floor(totalSec / 60);
     const s = totalSec % 60;
     return `${m}:${s.toString().padStart(2, '0')}`;
-  }
-
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
   }
 
   function updateStatusUI(status, details = {}) {
@@ -253,14 +266,16 @@ document.addEventListener('DOMContentLoaded', () => {
       if (langSelectorContainer && langSelect) {
         if (availableLanguages.length > 1) {
           langSelectorContainer.classList.remove('hidden');
-          langSelect.innerHTML = availableLanguages
-            .map(
-              (l) =>
-                `<option value="${escapeHtml(l.url || l.code)}"${
-                  l.code === details.language ? ' selected' : ''
-                }>${escapeHtml(l.name || l.code)}${l.isOriginal ? ' (Original)' : ''}</option>`
-            )
-            .join('');
+          langSelect.replaceChildren();
+          for (const l of availableLanguages) {
+            const opt = document.createElement('option');
+            opt.value = l.url || l.code;
+            opt.textContent = `${l.name || l.code}${l.isOriginal ? ' (Original)' : ''}`;
+            if (l.code === details.language) {
+              opt.selected = true;
+            }
+            langSelect.appendChild(opt);
+          }
         } else {
           langSelectorContainer.classList.add('hidden');
         }

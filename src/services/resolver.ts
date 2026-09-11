@@ -50,14 +50,149 @@ export function isShortLink(urlStr: string): boolean {
 }
 
 /**
+ * Checks if a hostname belongs to private/internal IPs or localhost.
+ */
+export function isPrivateOrBlockedHost(hostname: string): boolean {
+  if (!hostname) return true;
+
+  // Localhost & internal names
+  if (
+    hostname === 'localhost' ||
+    hostname.endsWith('.localhost') ||
+    hostname === 'local' ||
+    hostname.endsWith('.local') ||
+    hostname === 'internal' ||
+    hostname.endsWith('.internal')
+  ) {
+    return true;
+  }
+
+  // IPv4 Loopback: 127.0.0.0/8
+  if (/^127(?:\.[0-9]+){3}$/.test(hostname)) return true;
+  // IPv4 Private Class A: 10.0.0.0/8
+  if (/^10(?:\.[0-9]+){3}$/.test(hostname)) return true;
+  // IPv4 Private Class B: 172.16.0.0/12
+  if (/^172\.(?:1[6-9]|2[0-9]|3[01])(?:\.[0-9]+){2}$/.test(hostname)) return true;
+  // IPv4 Private Class C: 192.168.0.0/16
+  if (/^192\.168(?:\.[0-9]+){2}$/.test(hostname)) return true;
+  // IPv4 Link-Local & Cloud Metadata: 169.254.0.0/16 (e.g. 169.254.169.254)
+  if (/^169\.254(?:\.[0-9]+){2}$/.test(hostname)) return true;
+  // IPv4 Current Network: 0.0.0.0/8
+  if (/^0(?:\.[0-9]+){3}$/.test(hostname)) return true;
+  // Numeric/Decimal or Hex representations of IP
+  if (/^(?:0x[0-9a-f]+|[0-9]+)$/i.test(hostname)) return true;
+
+  // IPv6 loopback, link-local, unique local
+  if (
+    hostname === '::1' ||
+    hostname === '[::1]' ||
+    hostname === '::' ||
+    hostname === '[::]' ||
+    hostname.startsWith('fe80:') ||
+    hostname.startsWith('[fe80:') ||
+    hostname.startsWith('fc00:') ||
+    hostname.startsWith('[fc00:') ||
+    hostname.startsWith('fd00:') ||
+    hostname.startsWith('[fd00:')
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
+ * Checks whether a hostname strictly belongs to the official TikTok domain family.
+ */
+export function isWhitelistedTikTokDomain(hostname: string): boolean {
+  if (!hostname) return false;
+  const h = hostname.toLowerCase().trim();
+
+  // Known exact domain entries
+  const exact = [
+    'tiktok.com',
+    'www.tiktok.com',
+    'vm.tiktok.com',
+    'vt.tiktok.com',
+    'v.tiktok.com',
+    'm.tiktok.com',
+  ];
+  if (exact.includes(h)) return true;
+
+  // Valid TikTok subdomains (e.g. de.tiktok.com, us.tiktok.com)
+  if (h.endsWith('.tiktok.com')) {
+    const prefix = h.slice(0, -'.tiktok.com'.length);
+    return /^[a-z0-9-]+(\.[a-z0-9-]+)*$/.test(prefix);
+  }
+
+  return false;
+}
+
+/**
+ * Strict TikTok domain and SSRF validation.
+ * Rejects non-HTTPS schemes, private/internal IPs, and non-TikTok hosts.
+ */
+export function validateTikTokUrl(urlStr: string): {
+  valid: boolean;
+  error?: string;
+  normalizedUrl?: string;
+} {
+  if (!urlStr || typeof urlStr !== 'string') {
+    return { valid: false, error: 'URL must be a non-empty string' };
+  }
+
+  let raw = urlStr.trim();
+  // Auto-prefix https if user omitted scheme (e.g. "vm.tiktok.com/...")
+  if (!/^https?:\/\//i.test(raw)) {
+    raw = `https://${raw}`;
+  }
+
+  let parsed: URL;
+  try {
+    parsed = new URL(raw);
+  } catch {
+    return { valid: false, error: 'Invalid URL format' };
+  }
+
+  // 1. Strict HTTPS Protocol
+  if (parsed.protocol.toLowerCase() !== 'https:') {
+    return { valid: false, error: 'Insecure protocol: Only HTTPS URLs are allowed' };
+  }
+
+  // 2. Reject credentials in URL (e.g. https://user:pass@attacker.com)
+  if (parsed.username || parsed.password) {
+    return { valid: false, error: 'Embedded credentials in URL are prohibited' };
+  }
+
+  const hostname = parsed.hostname.toLowerCase();
+
+  // 3. Block private and internal IPs / localhost (SSRF protection)
+  if (isPrivateOrBlockedHost(hostname)) {
+    return { valid: false, error: 'Access to private or internal network addresses is blocked' };
+  }
+
+  // 4. Whitelist TikTok domains
+  if (!isWhitelistedTikTokDomain(hostname)) {
+    return {
+      valid: false,
+      error: `Unauthorized domain: "${hostname}". Only official TikTok URLs (*.tiktok.com) are supported.`,
+    };
+  }
+
+  return { valid: true, normalizedUrl: parsed.toString() };
+}
+
+/**
  * Resolves short links by following HTTP 301/302/307/308 redirects manually.
  * Returns the final URL and extracted Video ID.
  */
 export async function resolveTikTokUrl(inputUrl: string): Promise<ResolveResult> {
-  let currentUrl = inputUrl.trim();
-  if (!currentUrl.startsWith('http://') && !currentUrl.startsWith('https://')) {
-    currentUrl = `https://${currentUrl}`;
+  const check = validateTikTokUrl(inputUrl);
+  if (!check.valid || !check.normalizedUrl) {
+    throw new Error(`invalid_link: ${check.error || 'Invalid TikTok URL'}`);
   }
+
+  let currentUrl = check.normalizedUrl;
 
   // First quick check: maybe it is already a direct video link
   let videoId = extractVideoId(currentUrl);
@@ -85,8 +220,15 @@ export async function resolveTikTokUrl(inputUrl: string): Promise<ResolveResult>
     const location = response.headers.get('location');
 
     if (location && [301, 302, 303, 307, 308].includes(status)) {
-      const nextUrl = new URL(location, currentUrl).toString();
-      currentUrl = nextUrl;
+      const nextParsed = new URL(location, currentUrl);
+      const redirectCheck = validateTikTokUrl(nextParsed.toString());
+      if (!redirectCheck.valid || !redirectCheck.normalizedUrl) {
+        throw new Error(
+          `ssrf_blocked: Redirect to unauthorized host or protocol blocked: ${nextParsed.hostname}`
+        );
+      }
+
+      currentUrl = redirectCheck.normalizedUrl;
 
       // Check if location header already has the video ID
       videoId = extractVideoId(currentUrl);
